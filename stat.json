@@ -1,0 +1,83 @@
+{
+  "last_updated": "2024-01-15T15:45:00Z",
+  "total_members": 8,
+  "online": 3,
+  "admins": 2,
+  "banned": 2,
+  "members": [
+    {
+      "id": 1,
+      "username": "alex_developer",
+      "real_name": "Александр Иванов",
+      "avatar": "https://avatars.githubusercontent.com/u/1?s=200&v=4",
+      "status": "admin",
+      "last_seen": "2024-01-15T15:45:00Z",
+      "role": "Создатель чата"
+    },
+    {
+      "id": 2,
+      "username": "maria_designer",
+      "real_name": "Мария Петрова",
+      "avatar": "https://avatars.githubusercontent.com/u/2?s=200&v=4",
+      "status": "online",
+      "last_seen": "2024-01-15T15:40:00Z",
+      "role": "Главный дизайнер"
+    },
+    {
+      "id": 3,
+      "username": "dmitry_tester",
+      "real_name": "Дмитрий Сидоров",
+      "avatar": "https://avatars.githubusercontent.com/u/3?s=200&v=4",
+      "status": "offline",
+      "last_seen": "2024-01-15T14:45:00Z",
+      "role": "Тестировщик"
+    },
+    {
+      "id": 4,
+      "username": "ivan_spamer",
+      "real_name": "Иван Банный",
+      "avatar": "https://avatars.githubusercontent.com/u/4?s=200&v=4",
+      "status": "banned",
+      "last_seen": "2024-01-14T11:20:00Z",
+      "banned_reason": "Спам",
+      "banned_since": "2024-01-14T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "username": "olga_moderator",
+      "real_name": "Ольга Смирнова",
+      "avatar": "https://avatars.githubusercontent.com/u/5?s=200&v=4",
+      "status": "admin",
+      "last_seen": "2024-01-15T15:35:00Z",
+      "role": "Модератор"
+    },
+    {
+      "id": 6,
+      "username": "sergey_user",
+      "real_name": "Сергей Козлов",
+      "avatar": "https://avatars.githubusercontent.com/u/6?s=200&v=4",
+      "status": "online",
+      "last_seen": "2024-01-15T15:45:00Z",
+      "role": "Участник"
+    },
+    {
+      "id": 7,
+      "username": "anna_helper",
+      "real_name": "Анна Волкова",
+      "avatar": "https://avatars.githubusercontent.com/u/7?s=200&v=4",
+      "status": "online",
+      "last_seen": "2024-01-15T15:30:00Z",
+      "role": "Помощник"
+    },
+    {
+      "id": 8,
+      "username": "max_troll",
+      "real_name": "Максим Троллингов",
+      "avatar": "https://avatars.githubusercontent.com/u/8?s=200&v=4",
+      "status": "banned",
+      "last_seen": "2024-01-13T09:15:00Z",
+      "banned_reason": "Троллинг",
+      "banned_since": "2024-01-13T10:30:00Z"
+    }
+  ]
+}
