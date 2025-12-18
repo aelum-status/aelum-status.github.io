@@ -1,0 +1,57 @@
+/* Дополнительные стили для проверки на бота */
+
+/* Иконки статусов в бейджах */
+.status-badge svg {
+    margin-right: 4px;
+    vertical-align: text-bottom;
+}
+
+/* Адаптивность для CAPTCHA */
+@media (max-width: 768px) {
+    .bot-check-content {
+        margin: 20px;
+        padding: 20px;
+        width: calc(100% - 40px);
+    }
+    
+    .captcha-text {
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+    
+    .captcha-input {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .bot-check-content {
+        padding: 15px;
+    }
+    
+    .captcha-text {
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+    
+    .bot-check-logo {
+        width: 48px;
+        height: 48px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+}
+
+/* Анимация появления основного контента */
+#main-content {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
