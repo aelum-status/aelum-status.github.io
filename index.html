@@ -1,202 +1,152 @@
 <!DOCTYPE html>
-<html lang="ru" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aelum Chat Status</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="https://github.githubassets.com/favicons/favicon.png">
-    <style>
-        #bot-check {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-        
-        .bot-check-content {
-            max-width: 400px;
-            text-align: center;
-            padding: 40px;
-            background: #f6f8fa;
-            border-radius: 12px;
-            border: 1px solid #d0d7de;
-        }
-        
-        .bot-check-logo {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 20px;
-        }
-        
-        .captcha-box {
-            margin: 20px 0;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #d0d7de;
-        }
-        
-        .captcha-text {
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #1F2328;
-            margin: 15px 0;
-            user-select: none;
-        }
-        
-        .captcha-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #d0d7de;
-            border-radius: 6px;
-            font-size: 16px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        
-        .captcha-input:focus {
-            outline: none;
-            border-color: #0969da;
-        }
-        
-        .captcha-error {
-            color: #d1242f;
-            font-size: 14px;
-            margin-top: 8px;
-            display: none;
-        }
-        
-        .btn-primary {
-            background-color: #0969da;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0859c5;
-        }
-        
-        .btn-primary:disabled {
-            background-color: #656d76;
-            cursor: not-allowed;
-        }
-        
-        .bot-check-info {
-            font-size: 14px;
-            color: #656d76;
-            margin-top: 20px;
-        }
-        
-        .attempts-warning {
-            color: #9a6700;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primer/21.0.5/primer.css">
 </head>
-<body class="color-bg-default">
-    <!-- Экран проверки на бота -->
-    <div id="bot-check">
+<body>
+    <!-- Проверка на бота (изначально скрыта) -->
+    <div id="bot-check" class="bot-check-container" style="display: none;">
         <div class="bot-check-content">
-            <svg class="bot-check-logo octicon octicon-shield-check" viewBox="0 0 16 16" width="64" height="64" fill="#0969da">
-                <path d="M8.533.133a1.75 1.75 0 0 0-1.066 0l-5.25 1.68A1.75 1.75 0 0 0 1 3.48V7c0 1.566.32 3.182 1.303 4.682.983 1.498 2.585 2.813 5.032 3.855a1.7 1.7 0 0 0 .327.087l.18.033.181-.033a1.75 1.75 0 0 0 .327-.087c2.447-1.042 4.049-2.357 5.032-3.855C14.68 10.182 15 8.566 15 7V3.48a1.75 1.75 0 0 0-1.217-1.667L8.533.133Zm-.61 1.429a.25.25 0 0 1 .153 0l5.25 1.68a.25.25 0 0 1 .174.238V7c0 1.358-.275 2.666-1.057 3.86-.784 1.194-2.121 2.34-4.366 3.297a.2.2 0 0 1-.154 0c-2.245-.956-3.582-2.104-4.366-3.298C2.775 9.666 2.5 8.36 2.5 7V3.48a.25.25 0 0 1 .174-.238l5.25-1.68ZM4.75 7a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5A.75.75 0 0 1 4.75 7Zm0 2.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Z"></path>
-            </svg>
-            
-            <h2 style="margin-bottom: 10px;">Подтвердите, что вы не бот</h2>
-            <p style="color: #656d76; margin-bottom: 25px;">Для доступа к статусам чата выполните проверку</p>
-            
-            <div class="captcha-box">
-                <div style="font-size: 14px; color: #656d76; margin-bottom: 10px;">Введите текст с картинки:</div>
-                <div class="captcha-text" id="captcha-display">LOADING</div>
-                <input type="text" id="captcha-input" class="captcha-input" placeholder="Введите текст выше" maxlength="6" autocomplete="off">
-                <div class="captcha-error" id="captcha-error">Неверный код. Попробуйте снова.</div>
+            <div class="bot-check-header">
+                <svg class="bot-check-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+                <h2>Проверка безопасности</h2>
             </div>
             
-            <button id="verify-btn" class="btn-primary">
-                <span id="btn-text">Продолжить</span>
+            <div class="captcha-section">
+                <p>Пожалуйста, подтвердите что вы не робот</p>
+                <div class="captcha-display" id="captchaDisplay"></div>
+                <input type="text" id="captchaInput" class="captcha-input" placeholder="Введите код" maxlength="6">
+                <div class="captcha-error" id="captchaError"></div>
+            </div>
+            
+            <button id="verifyButton" class="verify-btn">
+                Подтвердить
             </button>
             
-            <div class="bot-check-info">
-                <p>Эта проверка помогает защитить сайт от автоматического доступа.</p>
-                <div class="attempts-warning" id="attempts-warning">Осталось попыток: 5</div>
+            <div class="bot-check-footer">
+                <p>Осталось попыток: <span id="attemptsCount">5</span></p>
             </div>
         </div>
     </div>
 
-    <!-- Основной контент сайта (скрыт до проверки) -->
-    <div id="main-content" style="display: none;">
-        <div class="container-lg px-3 my-5 markdown-body">
-            <header class="d-flex flex-items-center flex-justify-between border-bottom pb-3 mb-4">
-                <div class="d-flex flex-items-center">
-                    <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" class="octicon octicon-organization color-fg-muted mr-3">
-                        <path d="M1.5 14.25c0 .138.112.25.25.25H4v-1.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v1.25h2.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25v12.5Z"></path>
-                        <path d="M2 1.75C2 .784 2.784 0 3.75 0h8.5C13.216 0 14 .784 14 1.75v12.5A1.75 1.75 0 0 1 12.25 16h-8.5A1.75 1.75 0 0 1 2 14.25V1.75Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5Z"></path>
-                    </svg>
-                    <h1 class="h2">Aelum Chat Status</h1>
-                </div>
-                <span class="Label color-bg-accent-emphasis color-fg-on-emphasis px-2">LIVE</span>
-            </header>
+    <!-- Основной контент сайта -->
+    <div id="main-content">
+        <!-- Переключатель темы -->
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <svg id="theme-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
+            </svg>
+        </button>
 
-            <div class="Box mb-4">
-                <div class="Box-header">
-                    <h2 class="Box-title">Участники чата</h2>
-                </div>
-                <div id="members-container" class="Box-body p-0">
-                    <div class="p-3 text-center color-fg-subtle">
-                        <span class="AnimatedEllipsis"></span> Загрузка статусов...
+        <!-- Шапка сайта -->
+        <header class="site-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        <div class="logo-text">
+                            <h1>Aelum Chat Status</h1>
+                            <p class="subtitle">Статус участников чата</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <span class="status-indicator" id="statusIndicator">
+                            <span class="status-dot online"></span>
+                            <span>Система активна</span>
+                        </span>
+                        <button class="refresh-btn" onclick="loadStatusData()">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill="currentColor" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                            </svg>
+                            Обновить
+                        </button>
                     </div>
                 </div>
-                <div class="Box-footer color-fg-muted f6">
-                    Обновлено: <span id="update-time">--:--</span>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Статистика -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalMembers">0</div>
+                        <div class="stat-label">Всего участников</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeMembers">0</div>
+                        <div class="stat-label">Активные</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="adminMembers">0</div>
+                        <div class="stat-label">Администраторы</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="bannedMembers">0</div>
+                        <div class="stat-label">Заблокированы</div>
+                    </div>
+                </div>
+
+                <!-- Таблица участников -->
+                <div class="members-section">
+                    <div class="section-header">
+                        <h2>Участники чата</h2>
+                        <div class="time-info">
+                            Обновлено: <span id="lastUpdateTime">--:--:--</span>
+                        </div>
+                    </div>
+
+                    <div class="members-table">
+                        <div class="table-header">
+                            <div class="table-cell">Пользователь</div>
+                            <div class="table-cell">Статус</div>
+                            <div class="table-cell">Последняя активность</div>
+                            <div class="table-cell">Роль</div>
+                        </div>
+                        
+                        <div id="membersContainer" class="table-body">
+                            <!-- Данные загружаются через JavaScript -->
+                            <div class="loading-row">
+                                <div class="loading-spinner"></div>
+                                <p>Загрузка данных...</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </main>
 
-            <div class="flash flash-full flash-warn" style="display: none;" id="error-message">
-                <svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" width="16" height="16">
-                    <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
-                </svg>
-                <span id="error-text"></span>
+        <!-- Футер -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-info">
+                        <p>Aelum Chat Status &copy; 2024</p>
+                        <p class="footer-note">Статусы обновляются автоматически</p>
+                    </div>
+                    <div class="footer-links">
+                        <p>Статусы:</p>
+                        <div class="status-legends">
+                            <span class="status-badge admin">Админ</span>
+                            <span class="status-badge active">Состоит</span>
+                            <span class="status-badge banned">Забанен</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <footer class="border-top pt-3 mt-4 color-fg-muted f6">
-                <p>Данные обновляются автоматически. Статусы: <span class="color-fg-done">●</span> онлайн, 
-                <span class="color-fg-attention">●</span> офлайн, <span class="color-fg-danger">●</span> забанен, 
-                <span class="color-fg-accent">●</span> админ</p>
-            </footer>
-        </div>
+        </footer>
     </div>
 
+    <!-- Подключение внешних JavaScript файлов -->
     <script src="script.js"></script>
     <script src="bot-check.js"></script>
 </body>
