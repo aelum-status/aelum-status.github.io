@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aelum Chat Status</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="https://github.githubassets.com/favicons/favicon.png">
+    <style>
+        #bot-check {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .bot-check-content {
+            max-width: 400px;
+            text-align: center;
+            padding: 40px;
+            background: #f6f8fa;
+            border-radius: 12px;
+            border: 1px solid #d0d7de;
+        }
+        
+        .bot-check-logo {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .captcha-box {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #d0d7de;
+        }
+        
+        .captcha-text {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #1F2328;
+            margin: 15px 0;
+            user-select: none;
+        }
+        
+        .captcha-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        .captcha-input:focus {
+            outline: none;
+            border-color: #0969da;
+        }
+        
+        .captcha-error {
+            color: #d1242f;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .btn-primary {
+            background-color: #0969da;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0859c5;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #656d76;
+            cursor: not-allowed;
+        }
+        
+        .bot-check-info {
+            font-size: 14px;
+            color: #656d76;
+            margin-top: 20px;
+        }
+        
+        .attempts-warning {
+            color: #9a6700;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="color-bg-default">
+    <!-- Экран проверки на бота -->
+    <div id="bot-check">
+        <div class="bot-check-content">
+            <svg class="bot-check-logo octicon octicon-shield-check" viewBox="0 0 16 16" width="64" height="64" fill="#0969da">
+                <path d="M8.533.133a1.75 1.75 0 0 0-1.066 0l-5.25 1.68A1.75 1.75 0 0 0 1 3.48V7c0 1.566.32 3.182 1.303 4.682.983 1.498 2.585 2.813 5.032 3.855a1.7 1.7 0 0 0 .327.087l.18.033.181-.033a1.75 1.75 0 0 0 .327-.087c2.447-1.042 4.049-2.357 5.032-3.855C14.68 10.182 15 8.566 15 7V3.48a1.75 1.75 0 0 0-1.217-1.667L8.533.133Zm-.61 1.429a.25.25 0 0 1 .153 0l5.25 1.68a.25.25 0 0 1 .174.238V7c0 1.358-.275 2.666-1.057 3.86-.784 1.194-2.121 2.34-4.366 3.297a.2.2 0 0 1-.154 0c-2.245-.956-3.582-2.104-4.366-3.298C2.775 9.666 2.5 8.36 2.5 7V3.48a.25.25 0 0 1 .174-.238l5.25-1.68ZM4.75 7a.75.75 0 0 1 .75-.75h5a.75.75 0 0 1 0 1.5h-5A.75.75 0 0 1 4.75 7Zm0 2.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Z"></path>
+            </svg>
+            
+            <h2 style="margin-bottom: 10px;">Подтвердите, что вы не бот</h2>
+            <p style="color: #656d76; margin-bottom: 25px;">Для доступа к статусам чата выполните проверку</p>
+            
+            <div class="captcha-box">
+                <div style="font-size: 14px; color: #656d76; margin-bottom: 10px;">Введите текст с картинки:</div>
+                <div class="captcha-text" id="captcha-display">LOADING</div>
+                <input type="text" id="captcha-input" class="captcha-input" placeholder="Введите текст выше" maxlength="6" autocomplete="off">
+                <div class="captcha-error" id="captcha-error">Неверный код. Попробуйте снова.</div>
+            </div>
+            
+            <button id="verify-btn" class="btn-primary">
+                <span id="btn-text">Продолжить</span>
+            </button>
+            
+            <div class="bot-check-info">
+                <p>Эта проверка помогает защитить сайт от автоматического доступа.</p>
+                <div class="attempts-warning" id="attempts-warning">Осталось попыток: 5</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент сайта (скрыт до проверки) -->
+    <div id="main-content" style="display: none;">
+        <div class="container-lg px-3 my-5 markdown-body">
+            <header class="d-flex flex-items-center flex-justify-between border-bottom pb-3 mb-4">
+                <div class="d-flex flex-items-center">
+                    <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" class="octicon octicon-organization color-fg-muted mr-3">
+                        <path d="M1.5 14.25c0 .138.112.25.25.25H4v-1.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v1.25h2.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25v12.5Z"></path>
+                        <path d="M2 1.75C2 .784 2.784 0 3.75 0h8.5C13.216 0 14 .784 14 1.75v12.5A1.75 1.75 0 0 1 12.25 16h-8.5A1.75 1.75 0 0 1 2 14.25V1.75Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5Z"></path>
+                    </svg>
+                    <h1 class="h2">Aelum Chat Status</h1>
+                </div>
+                <span class="Label color-bg-accent-emphasis color-fg-on-emphasis px-2">LIVE</span>
+            </header>
+
+            <div class="Box mb-4">
+                <div class="Box-header">
+                    <h2 class="Box-title">Участники чата</h2>
+                </div>
+                <div id="members-container" class="Box-body p-0">
+                    <div class="p-3 text-center color-fg-subtle">
+                        <span class="AnimatedEllipsis"></span> Загрузка статусов...
+                    </div>
+                </div>
+                <div class="Box-footer color-fg-muted f6">
+                    Обновлено: <span id="update-time">--:--</span>
+                </div>
+            </div>
+
+            <div class="flash flash-full flash-warn" style="display: none;" id="error-message">
+                <svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" width="16" height="16">
+                    <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
+                </svg>
+                <span id="error-text"></span>
+            </div>
+
+            <footer class="border-top pt-3 mt-4 color-fg-muted f6">
+                <p>Данные обновляются автоматически. Статусы: <span class="color-fg-done">●</span> онлайн, 
+                <span class="color-fg-attention">●</span> офлайн, <span class="color-fg-danger">●</span> забанен, 
+                <span class="color-fg-accent">●</span> админ</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="bot-check.js"></script>
+</body>
+</html>
